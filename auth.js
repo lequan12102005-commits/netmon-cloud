@@ -11,7 +11,9 @@ const netmonAuth = (() => {
     // [COGNITO-REDIRECT] Dashboard chạy ngay tại root (không thư mục con).
     // Callback URL trong Cognito và địa chỉ Go Live phải cùng là
     // http://localhost:5500/ . Không đổi nếu chưa cập nhật Cognito.
-    const redirectUri = 'http://localhost:5500/';
+    const redirectUri = location.hostname === 'lequan12102005-commits.github.io'
+    ? 'https://lequan12102005-commits.github.io/netmon-cloud/'
+    : 'http://localhost:5500/';
     const pendingKey = 'netmon-pkce';
     const sessionKey = 'netmon-cognito-session';
     // [COGNITO-SESSION] Giữ access token trong sessionStorage của tab hiện tại.
@@ -38,7 +40,8 @@ const netmonAuth = (() => {
         // [GO-LIVE-ROOT] Không cho đăng nhập từ thư mục con.
         // Nếu đăng nhập từ /NetMon-Cloud/index.html, Cognito vẫn trả về /,
         // dẫn tới trang listing directory như lỗi người dùng đã gặp.
-        if (!['/', '/index.html'].includes(location.pathname)) {
+        const callbackPath = new URL(redirectUri).pathname;
+if (![callbackPath, `${callbackPath}index.html`].includes(location.pathname)) {
             throw new Error(
                 'Hãy mở đúng thư mục chứa index.html trong VS Code rồi truy cập http://localhost:5500/ trước khi đăng nhập.'
             );
