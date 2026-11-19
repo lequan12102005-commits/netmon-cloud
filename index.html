@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <!-- [HTML-HEAD] Thay tên ứng dụng, favicon, CSS/JS ở đây -->
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="#0c1424" name="theme-color"/>
+    <meta content="NetMon Cloud – quản lý và giám sát hạ tầng mạng trên AWS Serverless" name="description"/>
+    <title>
+      NetMon Cloud | Giám sát hạ tầng mạng
+    </title>
+    <link href="favicon.svg" rel="icon" type="image/svg+xml"/>
+    <link href="style.css" rel="stylesheet"/>
+    <script defer="" src="auth.js">
+    </script>
+    <script defer="" src="app.js">
+    </script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- [HTML-SIDEBAR] Các mục menu bên trái -->
+      <aside aria-label="Điều hướng chính" class="sidebar">
+        <div class="brand">
+          <span class="brand-icon">
+            ◈
+          </span>
+          <div>
+            <strong>
+              NetMon
+              <span>
+                Cloud
+              </span>
+            </strong>
+            <small>
+              AWS NETWORK OPERATIONS
+            </small>
+          </div>
+        </div>
+        <div class="sidebar-label">
+          QUẢN TRỊ
+        </div>
+        <nav aria-label="Các trang quản trị" class="nav">
+          <button aria-current="page" data-page="overview" type="button">
+            <span class="nav-icon">
+              ▦
+            </span>
+            Tổng quan
+          </button>
+          <button data-page="devices" type="button">
+            <span class="nav-icon">
+              ▤
+            </span>
+            Quản lý thiết bị
+          </button>
+          <button data-page="metrics" type="button">
+            <span class="nav-icon">
+              ⌁
+            </span>
+            Hiệu năng &amp; Metrics
+          </button>
+          <button data-page="alerts" type="button">
+            <span class="nav-icon">
+              ⚑
+            </span>
+            Cảnh báo &amp; sự cố
+            <span class="nav-count" hidden="" id="nav-alert-count">
+              0
+            </span>
+          </button>
+          <button data-page="topology" type="button">
+            <span class="nav-icon">
+              ◇
+            </span>
+            Sơ đồ hạ tầng
+          </button>
+          <button data-page="logs" type="button">
+            <span class="nav-icon">
+              ≡
+            </span>
+            Nhật ký lịch sử
+          </button>
+        </nav>
+        <div class="sidebar-label sidebar-label-secondary">
+          HỆ THỐNG
+        </div>
+        <nav aria-label="Cấu hình" class="nav">
+          <button data-page="settings" type="button">
+            <span class="nav-icon">
+              ⚙
+            </span>
+            Cấu hình &amp; kết nối
+          </button>
+        </nav>
+        <div class="side-bottom">
+          <div class="cloud-symbol">
+            ☁
+          </div>
+          <div>
+            <strong>
+              Amazon Web Services
+            </strong>
+            <small>
+              Region: us-east-1
+            </small>
+          </div>
+          <span class="connect-dot" id="side-dot">
+          </span>
+        </div>
+        <p class="sidebar-footer">
+          Giám sát hạ tầng mạng · AWS
+        </p>
+      </aside>
+      <div class="workspace">
+        <header class="topbar">
+          <div class="heading">
+            <div class="breadcrumb">
+              NETMON
+              <span>
+                /
+              </span>
+              QUẢN TRỊ HỆ THỐNG
+            </div>
+            <h1 id="page-title">
+              Tổng quan hệ thống
+            </h1>
+            <p id="page-caption">
+              Theo dõi tình trạng hạ tầng mạng doanh nghiệp
+            </p>
+          </div>
+          <div class="top-actions">
+            <span class="connection-badge" id="connection-badge">
+              Đang khởi tạo
+            </span>
+            <button class="btn btn-primary" hidden="" id="sign-in" type="button">
+              Đăng nhập AWS
+            </button>
+            <button class="btn btn-outline" hidden="" id="sign-out" type="button">
+              Thoát phiên
+            </button>
+          </div>
+        </header>
+        <div class="main-content">
+          <div class="notice" hidden="" id="notice" role="status">
+          </div>
+          <!-- [HTML-OVERVIEW] Bảng điều khiển chính -->
+          <section class="page" id="overview">
+            <div class="hero-banner">
+              <div class="hero-copy">
+                <span class="eyebrow">
+                  NETWORK COMMAND CENTER
+                </span>
+                <h2 id="health-title">
+                  Giám sát tập trung, phản ứng nhanh
+                </h2>
+                <p id="health-description">
+                  Quản lý thiết bị, theo dõi hiệu năng và xử lý cảnh báo trên một hệ thống.
+                </p>
+                <div class="hero-meta">
+                  <span>
+                    ◷
+                    <span id="last-update">
+                      Chưa cập nhật
+                    </span>
+                  </span>
+                  <span>
+                    ⌁
+                    <span id="hero-source">
+                      Nguồn: AWS API
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div aria-hidden="true" class="hero-graphic">
+                <span class="ring ring-one">
+                </span>
+                <span class="ring ring-two">
+                </span>
+                <span class="ring ring-three">
+                </span>
+                <span class="hero-center">
+                  ◎
+                </span>
+                <span class="orbit orbit-a">
+                </span>
+                <span class="orbit orbit-b">
+                </span>
+                <span class="orbit orbit-c">
+                </span>
+              </div>
+            </div>
+            <div aria-label="Thống kê tổng quan" class="kpi-grid" id="stats">
+            </div>
+            <div class="content-grid overview-grid">
+              <article class="panel chart-panel">
+                <div class="panel-header">
+                  <div>
+                    <h3>
+                      Xu hướng CPU &amp; RAM
+                    </h3>
+                    <p>
+                      Trung bình CPU/RAM
+                    </p>
+                  </div>
+                  <span class="tiny-tag" id="chart-origin">
+                    Mẫu trình duyệt
+                  </span>
+                </div>
+                <div class="legend">
+                  <span>
+                    <i class="legend-dot cpu">
+                    </i>
+                    CPU
+                  </span>
+                  <span>
+                    <i class="legend-dot ram">
+                    </i>
+                    RAM
+                  </span>
+                </div>
+                <div class="chart-wrap" id="overview-chart">
+                </div>
+                <div class="chart-axis">
+                  <span>
+                    Cũ hơn
+                  </span>
+                  <span>
+                    Mới nhất
+                  </span>
+                </div>
+              </article>
+              <article class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h3>
+                      Thiết bị cần chú ý
+                    </h3>
+                    <p>
+                      Thiết bị có chỉ số hoặc trạng thái bất thường
+                    </p>
+                  </div>
+                  <button class="text-link" data-goto="devices" type="button">
+                    Xem tất cả →
+                  </button>
+                </div>
+                <div class="attention-list" id="attention-devices">
+                </div>
+              </article>
+            </div>
+            <div class="content-grid overview-bottom">
+              <article class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h3>
+                      Cảnh báo gần đây
+                    </h3>
+                  </div>
+                  <button class="text-link" data-goto="alerts" type="button">
+                    Xem cảnh báo →
+                  </button>
+                </div>
+                <div id="recent-alerts">
+                </div>
+              </article>
+              <article class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h3>
+                      Trạng thái tích hợp AWS
+                    </h3>
+                  </div>
+                </div>
+                <div class="integrations" id="integration-list">
+                </div>
+              </article>
+            </div>
+          </section>
+          <!-- [HTML-DEVICES] Bảng danh sách thiết bị -->
+          <section class="page" hidden="" id="devices">
+            <div class="section-intro">
+              <div>
+                <h2>
+                  Danh sách thiết bị
+                </h2>
+              </div>
+              <button class="btn btn-primary" id="add" type="button">
+                + Thêm thiết bị
+              </button>
+            </div>
+            <article class="panel">
+              <div class="table-tools">
+                <label class="search-box">
+                  <span>
+                    ⌕
+                  </span>
+                  <input aria-label="Tìm thiết bị" id="search" placeholder="Tìm tên thiết bị, mã, IP, vị trí..." type="search"/>
+                </label>
+                <select aria-label="Lọc trạng thái" id="status-filter">
+                  <option value="all">
+                    Tất cả trạng thái
+                  </option>
+                  <option value="ONLINE">
+                    Đang hoạt động
+                  </option>
+                  <option value="WARNING">
+                    Cảnh báo
+                  </option>
+                  <option value="OFFLINE">
+                    Ngoại tuyến
+                  </option>
+                </select>
+                <span class="muted" id="device-counter">
+                </span>
+              </div>
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>
+                        Thiết bị
+                      </th>
+                      <th>
+                        Địa chỉ IP
+                      </th>
+                      <th>
+                        Vị trí
+                      </th>
+                      <th>
+                        Trạng thái
+                      </th>
+                      <th>
+                        CPU
+                      </th>
+                      <th>
+                        RAM
+                      </th>
+                      <th>
+                        Thao tác
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="device-rows">
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+          <!-- [METRICS] EC2 that truoc; mo phong va bieu do tach nguon -->
+          <section class="page" hidden="" id="metrics">
+            <div class="section-intro">
+              <div>
+                <h2>Giám sát hiệu năng</h2>
+              </div>
+              <span class="tiny-tag" id="metrics-updated">Đang kiểm tra metric AWS</span>
+            </div>
+
+            <article class="panel ec2-primary-panel">
+              <div class="panel-header">
+                <div>
+                  <div class="metrics-eyebrow">01 / DỮ LIỆU THỰC TẾ</div>
+                  <h3>Máy chủ EC2 · CloudWatch</h3>
+                </div>
+                <span class="status-chip unknown" id="cloudwatch-tag">Chưa kết nối</span>
+              </div>
+              <div class="kpi-grid cw-grid" id="cloudwatch-stats"></div>
+              <div class="table-scroll ec2-live-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Máy EC2 / Instance ID</th>
+                      <th>CPU</th>
+                      <th>RAM</th>
+                      <th>Network In</th>
+                      <th>Network Out</th>
+                      <th>Nguồn / Trạng thái</th>
+                      <th>Thời gian đo</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cloudwatch-instance-rows">
+                    <tr><td colspan="7" class="empty">Chưa nhận được dữ liệu CloudWatch.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="hint" id="cloudwatch-note">Dấu — nghĩa là chưa có dữ liệu, không phải 0%.</p>
+              <div class="ec2-alarm-info">
+                <strong>Cảnh báo EC2</strong>
+                <span id="ec2-alert-summary">Đang kiểm tra dữ liệu cảnh báo AWS…</span>
+                <small>Theo lịch sử cảnh báo AWS.</small>
+              </div>
+            </article>
+
+            <div class="section-intro metrics-secondary-intro">
+              <div>
+                <div class="metrics-eyebrow">02 / QUẢN LÝ HIỆU NĂNG</div>
+                <h2>Tổng quan thiết bị và biểu đồ</h2>
+                <p><button type="button" class="text-link-button" id="simulation-config-link">Chỉnh chu kỳ CPU/RAM mô phỏng</button></p>
+              </div>
+            </div>
+            <div class="kpi-grid metric-kpis" id="metric-stats"></div>
+            <div class="content-grid metrics-grid">
+              <article class="panel chart-panel">
+                <div class="panel-header">
+                  <div>
+                    <h3>Xu hướng CPU / RAM</h3>
+                    <p id="metrics-chart-subtitle">36 mẫu tổng hợp gần nhất</p>
+                  </div>
+                </div>
+                <div class="ec2-history-picker">
+                  <label for="history-instance-select">Nguồn biểu đồ</label>
+                  <select id="history-instance-select" aria-label="Chọn nguồn biểu đồ">
+                    <option value="">Tổng quan CPU/RAM thiết bị</option>
+                  </select>
+                  <div id="ec2-history-controls" class="ec2-history-controls" hidden>
+                    <label for="ec2-history-preset">Khoảng thời gian</label>
+                    <div class="ec2-history-actions">
+                      <select id="ec2-history-preset" aria-label="Chọn nhanh khoảng thời gian xem CloudWatch">
+                        <option value="15">15 phút</option>
+                        <option value="30">30 phút</option>
+                        <option value="60" selected>1 giờ</option>
+                        <option value="180">3 giờ</option>
+                        <option value="360">6 giờ</option>
+                        <option value="720">12 giờ</option>
+                        <option value="1440">24 giờ</option>
+                        <option value="custom">Tùy chỉnh...</option>
+                      </select>
+                      <div id="ec2-custom-range" class="ec2-custom-range" hidden>
+                        <input id="ec2-history-minutes" type="number" min="15" max="1440" step="1" value="60" aria-label="Số phút lịch sử CloudWatch (15–1440)" />
+                        <span>phút</span>
+                      </div>
+                      <button id="ec2-history-load" type="button" class="btn btn-outline">↻ Tải lịch sử</button>
+                    </div>
+                  </div>
+                  <small id="history-source-detail">Chưa tải biểu đồ.</small>
+                </div>
+                <div class="legend">
+                  <span><i class="legend-dot cpu"></i> CPU</span>
+                  <span><i class="legend-dot ram"></i> RAM</span>
+                  <span class="ec2-legend-alert" id="ec2-threshold-hint">Ngưỡng CPU/RAM (nét đứt)</span>
+                </div>
+                <div class="chart-wrap" id="metrics-chart"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h3>Tải theo thiết bị</h3>
+                    <p>CPU/RAM theo nguồn dữ liệu</p>
+                  </div>
+                </div>
+                <div class="meter-list" id="meters"></div>
+              </article>
+            </div>
+          </section>
+          <!-- [HTML-ALERTS] Danh sách cảnh báo lưu trong NetworkAlerts -->
+          <section class="page" hidden="" id="alerts">
+            <div class="section-intro">
+              <div>
+                <h2>
+                  Trung tâm cảnh báo
+                </h2>
+                <p id="alerts-source" role="status">Đang tải cảnh báo…</p>
+              </div>
+              <div class="inline-controls alert-bulk-toolbar">
+                <button class="btn btn-outline" id="alert-ack-all" type="button" disabled
+                  title="Tiếp nhận tất cả cảnh báo mới chưa tiếp nhận">
+                  ✓ Tiếp nhận tất cả
+                </button>
+                <button class="btn btn-outline" id="alert-select-visible" type="button" disabled
+                  title="Chỉ chọn các cảnh báo cần xử lý đang hiển thị theo bộ lọc">
+                  ☑ Chọn cả trang
+                </button>
+                <button class="btn btn-outline" id="alert-clear-selection" type="button" disabled
+                  title="Bỏ chọn các cảnh báo đã chọn">
+                  Bỏ chọn
+                </button>
+                <button class="btn btn-primary" id="alert-resolve-selected" type="button" disabled
+                  title="Hoàn tất chỉ những cảnh báo đã tích chọn, có xác nhận">
+                  ✓ Hoàn tất đã chọn (0)
+                </button>
+                <select aria-label="Lọc cảnh báo" id="alert-filter">
+                  <option value="all">
+                    Tất cả
+                  </option>
+                  <option value="open">
+                    Chưa xử lý
+                  </option>
+                  <option value="done">
+                    Đã kết thúc / đã xử lý
+                  </option>
+                </select>
+              </div>
+            </div>
+            <p class="alert-selection-count" id="alert-selection-count" role="status" aria-live="polite">Đã chọn: 0</p>
+            <div class="alert-bulk-progress" id="alert-bulk-status" role="status" aria-live="polite" hidden></div>
+            <div class="alert-summary" id="alert-summary">
+            </div>
+            <article class="panel">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col" class="alert-select-col">Chọn</th>
+                      <th>
+                        Thời gian
+                      </th>
+                      <th>
+                        Thiết bị
+                      </th>
+                      <th>
+                        Sự cố
+                      </th>
+                      <th>
+                        Mức độ
+                      </th>
+                      <th>
+                        Trạng thái
+                      </th>
+                      <th>
+                        Thao tác
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="alert-rows">
+                  </tbody>
+                </table>
+              </div>
+            </article>
+            <p class="hint" id="alert-note" hidden></p>
+          </section>
+          <section class="page" hidden="" id="topology">
+            <div class="section-intro"><div><h2>Sơ đồ hạ tầng</h2></div><span class="tiny-tag">Region us-east-1</span></div>
+            <div class="history-tabbar diagram-tabs" role="tablist" aria-label="Sơ đồ hạ tầng">
+              <button class="history-tab is-active" type="button" role="tab" id="diagram-tab-aws" aria-controls="aws-architecture" aria-selected="true" tabindex="0" data-diagram-tab="aws"><strong>Kiến trúc AWS</strong><small>Dịch vụ và luồng xử lý</small></button>
+              <button class="history-tab" type="button" role="tab" id="diagram-tab-network" aria-controls="network-diagram" aria-selected="false" tabindex="-1" data-diagram-tab="network"><strong>Sơ đồ mạng</strong><small>Thiết bị và trạng thái</small></button>
+            </div>
+            <article class="panel topology-section infra-architecture" id="aws-architecture" role="tabpanel" aria-labelledby="diagram-tab-aws">
+              <div class="panel-header"><div><h3>Kiến trúc hệ thống</h3></div></div>
+              <div class="infra-auth"><span class="infra-auth-icon">▣</span><div><strong>Amazon Cognito</strong><small>OAuth 2.0 / PKCE · JWT</small></div></div>
+              <div class="infra-lanes"><section class="infra-lane"><div class="infra-lane-heading"><strong>Truy cập &amp; quản lý</strong></div><div class="infra-flow"><div class="infra-node infra-blue"><span class="infra-node-tag">CLIENT</span><strong>NetMon Cloud</strong><small>Web Dashboard</small></div><div class="infra-arrow" aria-hidden="true"><span>JWT / HTTPS</span><b>→</b></div><div class="infra-node infra-pink"><span class="infra-node-tag">API</span><strong>API Gateway</strong><small>HTTP API · JWT Authorizer</small></div><div class="infra-arrow" aria-hidden="true"><span></span><b>→</b></div><div class="infra-node infra-orange"><span class="infra-node-tag">LAMBDA</span><strong>netmon-api</strong><small>CRUD · Metrics · Settings</small></div><div class="infra-arrow" aria-hidden="true"><span></span><b>→</b></div><div class="infra-node infra-blue"><span class="infra-node-tag">DATA</span><strong>DynamoDB</strong><small>Devices · Alerts · Settings · Audit</small></div></div></section><section class="infra-lane"><div class="infra-lane-heading"><strong>Mô phỏng &amp; giám sát</strong></div><div class="infra-flow"><div class="infra-node infra-pink"><span class="infra-node-tag">SCHEDULER</span><strong>EventBridge</strong><small>Lịch mỗi phút</small></div><div class="infra-arrow" aria-hidden="true"><span></span><b>→</b></div><div class="infra-node infra-orange"><span class="infra-node-tag">LAMBDA</span><strong>netmon-simulator</strong><small>CPU/RAM theo cấu hình</small></div><div class="infra-arrow" aria-hidden="true"><span></span><b>→</b></div><div class="infra-node infra-blue"><span class="infra-node-tag">DYNAMODB</span><strong>NetworkDevices</strong><small>Dữ liệu mô phỏng</small></div><div class="infra-arrow" aria-hidden="true"><span>Streams</span><b>→</b></div><div class="infra-node infra-orange"><span class="infra-node-tag">LAMBDA</span><strong>netmon-device-monitor</strong><small>Kiểm tra ngưỡng CPU/RAM</small></div></div></section><section class="infra-lane"><div class="infra-lane-heading"><strong>Cảnh báo &amp; nhật ký</strong></div><div class="infra-flow"><div class="infra-branch"><div class="infra-node infra-blue"><span class="infra-node-tag">EVENTS</span><strong>NetworkDevices</strong><small>DynamoDB Streams</small></div></div><div class="infra-arrow" aria-hidden="true"><span></span><b>→</b></div><div class="infra-branch"><div class="infra-node infra-orange"><span class="infra-node-tag">LAMBDA</span><strong>netmon-device-monitor</strong><small>Phát hiện vượt ngưỡng</small></div><div class="infra-node infra-orange"><span class="infra-node-tag">LAMBDA</span><strong>netmon-audit-writer</strong><small>Ghi thay đổi thiết bị</small></div></div><div class="infra-arrow" aria-hidden="true"><span></span><b>→</b></div><div class="infra-branch"><div class="infra-node infra-pink"><span class="infra-node-tag">ALERTS</span><strong>NetworkAlerts / SNS</strong><small>Lưu cảnh báo · email khi bật</small></div><div class="infra-node infra-blue"><span class="infra-node-tag">DYNAMODB</span><strong>NetworkAuditLogs</strong><small>Lưu nhật ký AWS</small></div></div></div></section><section class="infra-lane"><div class="infra-lane-heading"><strong>Giám sát EC2 thực tế</strong></div><div class="infra-flow"><div class="infra-node infra-orange"><span class="infra-node-tag">COMPUTE</span><strong>EC2 trong VPC</strong><small>netmon-ec2-server</small></div><div class="infra-arrow" aria-hidden="true"><span>Metric</span><b>→</b></div><div class="infra-node infra-pink"><span class="infra-node-tag">MONITORING</span><strong>CloudWatch</strong><small>CPU · RAM · Network · Alarm</small></div><div class="infra-arrow" aria-hidden="true"><span></span><b>→</b></div><div class="infra-branch"><div class="infra-node infra-orange"><span class="infra-node-tag">METRICS</span><strong>netmon-api → Web</strong><small>Đọc chỉ số và lịch sử</small></div><div class="infra-node infra-pink"><span class="infra-node-tag">NOTIFY</span><strong>Amazon SNS</strong><small>Alarm actions · email khi bật</small></div></div></div></section></div>
+              
+              <p class="diagram-disclaimer">Kiến trúc thiết kế · Trạng thái dịch vụ xem tại Tổng quan.</p>
+            </article>
+            <article class="panel topology-section" id="network-diagram" role="tabpanel" aria-labelledby="diagram-tab-network" hidden>
+              <div class="panel-header">
+                <div>
+                  <h3>
+                    Sơ đồ mạng doanh nghiệp &amp; EC2
+                  </h3>
+                  
+                </div>
+              </div>
+              <div class="topology-summary" id="topology-summary" aria-label="Thống kê trạng thái thiết bị"></div>
+              <div class="topology-toolbar">
+                <input type="search" id="topology-search" class="log-search" placeholder="Tìm tên, mã, IP, vị trí..." aria-label="Tìm thiết bị trên sơ đồ" />
+                <select id="topology-status" aria-label="Lọc trạng thái sơ đồ">
+                  <option value="all">Tất cả trạng thái</option><option value="ONLINE">Hoạt động</option><option value="WARNING">Cảnh báo</option><option value="OFFLINE">Offline (khai báo)</option><option value="STALE">Dữ liệu cũ</option><option value="UNKNOWN">Không rõ</option>
+                </select><span class="muted" id="topology-match"></span>
+              </div>
+              <div class="net-control"><span class="net-view-title">Thiết bị mạng</span><div class="net-zoom"><button id="topology-zoom-out" type="button" aria-label="Thu nhỏ">−</button><span id="topology-zoom-value">100%</span><button id="topology-zoom-in" type="button" aria-label="Phóng to">+</button><button id="topology-fit" type="button">Vừa khung</button></div></div>
+              <div class="net-viewport" id="topology-viewport"><div class="net-stage" id="topology-stage"></div></div>
+              <div class="net-legend"><span><i class="net-legend-dot online"></i>Hoạt động</span><span><i class="net-legend-dot warning"></i>Cảnh báo</span><span><i class="net-legend-dot offline"></i>Ngoại tuyến</span><span><i class="net-legend-dot unknown"></i>Dữ liệu cũ / không rõ</span><span class="net-legend-line">Liên kết mô phỏng</span></div>
+              
+            </article>
+          </section>
+          <!-- ============================================================
+               [HTML-LOGS] Nhat ky: ba nguon rieng biet, KHONG tron du lieu.
+               1) Thay doi thiet bi AWS: GET /logs -> NetworkAuditLogs.
+               2) Thao tac giao dien: localStorage tren trinh duyet hien tai.
+               3) Canh bao AWS: GET /alerts -> NetworkAlerts.
+               ============================================================ -->
+          <section class="page" hidden="" id="logs">
+            <div class="section-intro">
+              <div>
+                <h2>Nhật ký lịch sử</h2>
+                <p>Theo dõi thay đổi thiết bị trên AWS, thao tác trong trình duyệt và lịch sử cảnh báo.</p>
+              </div>
+              <button class="btn btn-outline" id="refresh-history" type="button">
+                ↻ Tải lại lịch sử AWS
+              </button>
+            </div>
+
+            <div class="history-tabbar" role="tablist" aria-label="Ba trang nhật ký">
+              <button class="history-tab is-active" type="button" role="tab"
+                id="history-tab-devices" aria-controls="history-page-devices"
+                aria-selected="true" tabindex="0" data-history-tab="devices">
+                <strong>01 · Thiết bị AWS</strong><small>Thêm, sửa, xóa · DynamoDB Streams</small>
+              </button>
+              <button class="history-tab" type="button" role="tab"
+                id="history-tab-alerts" aria-controls="history-page-alerts"
+                aria-selected="false" tabindex="-1" data-history-tab="alerts">
+                <strong>02 · Cảnh báo AWS</strong><small>CPU/RAM, CloudWatch và xử lý</small>
+              </button>
+              <button class="history-tab" type="button" role="tab"
+                id="history-tab-local" aria-controls="history-page-local"
+                aria-selected="false" tabindex="-1" data-history-tab="local">
+                <strong>03 · Thao tác giao diện</strong><small>Nhật ký trong trình duyệt này</small>
+              </button>
+            </div>
+            <div class="history-layout">
+              <!-- [HTML-AUDIT-AWS] Nhat ky thay doi thiet bi that tu DynamoDB Streams.
+                   Can deploy Lambda netmon-audit-writer + GET /logs truoc khi co du lieu. -->
+              <article class="panel history-panel" id="history-page-devices" role="tabpanel" aria-labelledby="history-tab-devices">
+                <div class="panel-header history-panel-header">
+                  <div>
+                    <h3 id="device-audit-heading">Nhật ký thay đổi thiết bị trên AWS</h3>
+                    <p>Ghi nhận thêm, sửa và xóa thiết bị từ DynamoDB Streams.</p>
+                  </div>
+                  <span class="status-chip unknown" id="device-audit-status">Chưa kết nối</span>
+                </div>
+                <div class="history-meta">
+                  <span id="device-audit-info" role="status">Đang kiểm tra GET /logs...</span>
+                  <span class="history-count" id="device-audit-count">0 sự kiện</span>
+                </div>
+                <div class="history-tools history-filters">
+                  <input
+                    aria-label="Tìm lịch sử thiết bị AWS"
+                    class="log-search"
+                    id="device-audit-search"
+                    placeholder="Tìm ID, tên thiết bị, IP, thay đổi..."
+                    type="search"
+                  />
+                  <select id="device-audit-filter" aria-label="Lọc hành động thiết bị AWS">
+                    <option value="all">Mọi thao tác</option>
+                    <option value="INSERT">Thêm thiết bị</option>
+                    <option value="MODIFY">Sửa thiết bị</option>
+                    <option value="REMOVE">Xóa thiết bị</option>
+                  </select>
+                </div>
+                <div class="table-scroll history-alert-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Thời điểm</th>
+                        <th>Thao tác</th>
+                        <th>Thiết bị</th>
+                        <th>Thông tin thay đổi</th>
+                        <th>Nguồn ghi nhận</th>
+                      </tr>
+                    </thead>
+                    <tbody id="device-audit-rows"></tbody>
+                  </table>
+                </div>
+                <p class="history-footnote">100 sự kiện AWS gần nhất.</p>
+              </article>
+              <!-- [HTML-LOGS-LOCAL] Chi o trinh duyet, khong phai lich su CloudTrail. -->
+              <article class="panel history-panel" id="history-page-local" role="tabpanel" aria-labelledby="history-tab-local" hidden>
+                <div class="panel-header history-panel-header">
+                  <div>
+                    <h3 id="local-log-heading">Nhật ký thao tác</h3>
+                    <p>Thêm, sửa, xóa thiết bị; lưu cấu hình; xác nhận sự cố.</p>
+                  </div>
+                  <span class="history-source history-source-local">Trình duyệt</span>
+                </div>
+                <div class="history-tools">
+                  <input
+                    aria-label="Tìm nhật ký thao tác"
+                    class="log-search"
+                    id="log-search"
+                    placeholder="Tìm thao tác hoặc thiết bị..."
+                    type="search"
+                  />
+                  <span class="history-count" id="operation-count">0 thao tác</span>
+                </div>
+                <div class="table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Thời điểm</th>
+                        <th>Thao tác</th>
+                        <th>Chi tiết</th>
+                        <th>Nguồn</th>
+                      </tr>
+                    </thead>
+                    <tbody id="operation-rows"></tbody>
+                  </table>
+                </div>
+                <p class="history-footnote">
+                  Những bản ghi này nằm trong localStorage của trình duyệt đang dùng.
+                  Chúng không được đồng bộ với AWS hoặc các máy khác.
+                </p>
+              </article>
+
+              <!-- [HTML-LOGS-AWS] Chi hien bang ghi GET /alerts tra ve thanh cong. -->
+              <article class="panel history-panel" id="history-page-alerts" role="tabpanel" aria-labelledby="history-tab-alerts" hidden>
+                <div class="panel-header history-panel-header">
+                  <div>
+                    <h3 id="aws-log-heading">Lịch sử cảnh báo AWS</h3>
+                    <p>CloudWatch và thiết bị mô phỏng đã ghi vào DynamoDB NetworkAlerts.</p>
+                  </div>
+                  <span class="status-chip unknown" id="aws-history-status">Chưa kết nối</span>
+                </div>
+                <div class="history-meta">
+                  <span id="aws-history-info" role="status">Đang kiểm tra kết nối API GET /alerts...</span>
+                  <span class="history-count" id="aws-history-count">0 sự kiện</span>
+                </div>
+                <div class="history-tools history-filters">
+                  <input
+                    aria-label="Tìm cảnh báo AWS"
+                    class="log-search"
+                    id="aws-alert-search"
+                    placeholder="Tìm thiết bị, cảnh báo, mã sự kiện..."
+                    type="search"
+                  />
+                  <select aria-label="Lọc theo nguồn cảnh báo AWS" id="aws-alert-source-filter">
+                    <option value="all">Tất cả nguồn</option>
+                    <option value="cloudwatch">CloudWatch</option>
+                    <option value="simulated">Mô phỏng</option>
+                  </select>
+                  <select aria-label="Lọc trạng thái cảnh báo AWS" id="aws-alert-status-filter">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="new">Chưa xử lý</option>
+                    <option value="acknowledged">Đã tiếp nhận</option>
+                    <option value="resolved">Đã xử lý</option>
+                    <option value="ok">CloudWatch OK</option>
+                    <option value="other">Sự kiện khác</option>
+                  </select>
+                </div>
+                <div class="table-scroll history-alert-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Thời điểm</th>
+                        <th>Thiết bị</th>
+                        <th>Cảnh báo</th>
+                        <th>Giá trị / Ngưỡng</th>
+                        <th>Nguồn</th>
+                        <th>Trạng thái AWS</th>
+                        <th>Trạng thái xử lý</th>
+                      </tr>
+                    </thead>
+                    <tbody id="aws-alert-history-rows"></tbody>
+                  </table>
+                </div>
+                <p class="history-footnote">
+                  Dữ liệu lấy từ <code>GET /alerts</code>, qua API Gateway → Lambda
+                  <code>netmon-api</code> → bảng <code>NetworkAlerts</code>.
+                  Đây là lịch sử cảnh báo, không phải nhật ký mọi thao tác người dùng trên AWS.
+                </p>
+              </article>
+            </div>
+          </section>
+          <!-- [HTML-SETTINGS] Form cấu hình API / ngưỡng / làm mới -->
+          <section class="page" hidden="" id="settings">
+            <div class="section-intro">
+              <div>
+                <h2>
+                  Cấu hình &amp; kết nối
+                </h2>
+                <p>
+                  Thiết lập ngưỡng, chu kỳ và kết nối AWS.
+                </p>
+              </div>
+            </div>
+            <form class="settings-form settings-layout" id="settings-form">
+              <div class="content-grid settings-grid">
+                <div class="settings-column">
+                  <article class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h3>
+                          API Gateway &amp; ngưỡng cảnh báo
+                        </h3>
+                        <p>
+                          Chỉ nhập Invoke URL, không nhập khóa AWS.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="settings-panel-fields">
+                      <label>
+                        API Gateway Invoke URL
+                        <input autocomplete="off" name="url" placeholder="https://...execute-api.us-east-1.amazonaws.com" type="url"/>
+                        <small>
+                          Không kèm /devices.
+                        </small>
+                      </label>
+                      <!-- [HTML-THRESHOLDS] Ngưỡng CPU và RAM là 2 cấu hình độc lập. -->
+                      <div class="threshold-settings">
+                        <div class="form-cols">
+                          <label>
+                            CPU vượt ngưỡng (%)
+                            <input
+                              id="cpu-threshold"
+                              name="cpuThreshold"
+                              type="number"
+                              min="1"
+                              max="99"
+                              step="1"
+                              value="80"
+                              required
+                            />
+                            
+                          </label>
+                          <label>
+                            RAM vượt ngưỡng (%)
+                            <input
+                              id="ram-threshold"
+                              name="ramThreshold"
+                              type="number"
+                              min="1"
+                              max="99"
+                              step="1"
+                              value="80"
+                              required
+                            />
+                            
+                          </label>
+                        </div>
+                        <p class="threshold-preview" id="threshold-preview" aria-live="polite">
+                          Giao diện cảnh báo khi CPU &gt; 80% hoặc RAM &gt; 80%.
+                        </p>
+                        <p class="threshold-help">
+                          Ngưỡng mô phỏng; EC2 dùng CloudWatch Alarms riêng.
+                        </p>
+                        <p class="threshold-preview" id="settings-sync" aria-live="polite">
+                          Chưa kết nối cấu hình AWS.
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                  <article class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h3>
+                          Kết nối AWS
+                        </h3>
+                        
+                      </div>
+                    </div>
+                    <div class="connection-details">
+                      <div>
+                        <span>
+                          Vùng AWS
+                        </span>
+                        <strong>
+                          us-east-1
+                        </strong>
+                      </div>
+                      <div>
+                        <span>
+                          API hiện tại
+                        </span>
+                        <strong class="break-word" id="connection-url">
+                          —
+                        </strong>
+                      </div>
+                      <div>
+                        <span>
+                          Amazon Cognito
+                        </span>
+                        <strong id="cognito-config">
+                          Đã cấu hình OAuth 2.0 / PKCE
+                        </strong>
+                      </div>
+                      <div>
+                        <span>
+                          Tuyến thiết bị
+                        </span>
+                        <strong>
+                          GET / POST / PUT / DELETE /devices
+                        </strong>
+                      </div>
+                      <div>
+                        <span>
+                          Tuyến cảnh báo
+                        </span>
+                        <strong id="alerts-route">
+                          Cần kiểm tra
+                        </strong>
+                      </div>
+                      <div>
+                        <span>
+                          Tuyến metric
+                        </span>
+                        <strong id="metrics-route">
+                          Cần kiểm tra
+                        </strong>
+                      </div>
+                    </div>
+                    
+                  </article>
+                </div>
+                <div class="settings-column settings-right">
+                <article class="panel settings-cycle-panel">
+                  <div class="panel-header">
+                    <div>
+                      <h3>Chu kỳ &amp; thông báo</h3>
+                      
+                    </div>
+                  </div>
+                  <div class="settings-panel-fields">
+                    <div class="settings-cycle-field settings-refresh-card">
+                      <div class="settings-refresh-heading">
+                        <label for="quick-refresh-interval">Chu kỳ cập nhật giao diện</label>
+                        <span class="auto-refresh-status" id="auto-refresh-status" role="status" aria-live="off">Đang khởi tạo…</span>
+                      </div>
+                      <div class="settings-refresh-actions">
+                        <select name="interval" id="quick-refresh-interval" aria-label="Chu kỳ cập nhật giao diện">
+                          <option value="0">Tắt</option>
+                          <option value="30">30 giây</option>
+                          <option value="60">60 giây</option>
+                          <option value="120">120 giây</option>
+                        </select>
+                        <button class="btn btn-outline auto-refresh-toggle" id="auto-refresh-toggle" type="button" aria-pressed="true">Tạm dừng</button>
+                        <button class="btn btn-outline refresh-icon-button" id="refresh" type="button" title="Tải dữ liệu AWS ngay" aria-label="Tải lại ngay dữ liệu AWS">↻</button>
+                      </div>
+                    </div>
+                    <!-- [SIMULATION-CONFIG] Lưu vào AWS NetworkSettings, không phải chu kỳ đọc web. -->
+                    <div class="simulation-cadence-panel">
+                      <div class="simulation-cadence-heading">
+                        <strong>Chu kỳ thay đổi CPU/RAM mô phỏng (AWS)</strong>
+                        <p>1–60 phút · không áp dụng cho EC2 thật.</p>
+                      </div>
+                      <div class="simulation-cadence-row">
+                        <label for="simulation-interval">Số phút</label>
+                        <input type="number" id="simulation-interval" min="1" max="60" step="1" value="5" inputmode="numeric" aria-describedby="simulation-sync" />
+                        <button class="btn btn-outline" type="button" id="save-simulation-interval">Lưu chu kỳ CPU/RAM</button>
+                      </div>
+                      <p id="simulation-sync" class="simulation-sync" role="status">Đang kiểm tra chu kỳ trên AWS...</p>
+                      
+                    </div>
+                    <label class="check-label">
+                      <input name="popup" type="checkbox"/>
+                      <span>
+                        Hiển thị popup khi có cảnh báo chưa xử lý mới
+                      </span>
+                    </label>
+                    <div class="settings-actions">
+                      <button class="btn btn-primary" id="save-settings" type="submit">
+                        Lưu cấu hình chung
+                      </button>
+                      <button class="btn btn-outline" id="demo-button" type="button">
+                        Dùng chế độ demo
+                      </button>
+                    </div>
+                  </div>
+                </article>
+            <!-- [SNS-STATUS] Chỉ đọc cấu hình, KHÔNG phát email từ trình duyệt -->
+            <article class="panel sns-status-panel" aria-labelledby="sns-heading">
+              <div class="panel-header">
+                <div>
+                  <h3 id="sns-heading">Amazon SNS · Trạng thái nhận email</h3>
+                  <p>Topic và đăng ký nhận thông báo.</p>
+                </div>
+                <span class="status-chip unknown" id="sns-status-tag">Chưa kiểm tra</span>
+              </div>
+              <div class="sns-status-grid">
+                <div class="sns-detail">
+                  <span>Topic</span>
+                  <strong class="break-word" id="sns-topic-name">Chưa xác định</strong>
+                </div>
+                <div class="sns-detail">
+                  <span>Email subscription đã xác nhận</span>
+                  <strong id="sns-confirmed-count">—</strong>
+                </div>
+                <div class="sns-detail">
+                  <span>Lần kiểm tra API</span>
+                  <strong id="sns-last-check">—</strong>
+                </div>
+              </div>
+              <p class="sns-explain" id="sns-explain" role="status">Đăng nhập và kiểm tra GET /sns/status để biết SNS đã được cấu hình chưa.</p>
+              <div class="sns-actions">
+                <button class="btn btn-outline" id="check-sns" type="button">↻ Kiểm tra SNS từ AWS</button>
+                <small>Chỉ kiểm tra cấu hình, không gửi email.</small>
+              </div>
+            </article>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+        <footer class="app-footer">
+          <span>
+            NetMon Cloud · AWS Serverless Network Monitoring
+          </span>
+          <span id="footer-status">
+            Sẵn sàng
+          </span>
+        </footer>
+      </div>
+    </div>
+    <!-- [HTML-DEVICE-DIALOG] Form thêm, sửa, xem thiết bị -->
+    <dialog class="modal" id="device-dialog">
+      <form id="device-form">
+        <div class="modal-heading">
+          <div>
+            <span class="eyebrow">
+              DEVICE MANAGEMENT
+            </span>
+            <h2 id="dialog-title">
+              Thiết bị
+            </h2>
+          </div>
+          <button aria-label="Đóng" class="icon-button" id="close" type="button">
+            ×
+          </button>
+        </div>
+        <div class="fields" id="fields">
+          <label>
+            Mã thiết bị
+            <input maxlength="100" name="deviceId" placeholder="SW001" required=""/>
+          </label>
+          <label>
+            Tên thiết bị
+            <input maxlength="120" name="deviceName" placeholder="Switch tầng 1" required=""/>
+          </label>
+          <label>
+            Loại thiết bị
+            <select name="deviceType" required>
+              <option value="Switch">Switch</option><option value="Router">Router</option>
+              <option value="Server">Server</option><option value="Firewall">Firewall</option>
+              <option value="Access Point">Access Point</option><option value="EC2">EC2 (AWS thực tế)</option>
+              <option value="Other">Khác</option>
+            </select>
+          </label>
+          <label id="ec2-instance-field" hidden>
+            EC2 Instance ID
+            <input name="instanceId" maxlength="19" pattern="i-([0-9a-f]{8}|[0-9a-f]{17})" placeholder="i-xxxxxxxxxxxxxxxxx" spellcheck="false" disabled/>
+          </label>
+          <label id="ec2-region-field" hidden>
+            Vùng AWS
+            <input name="region" value="us-east-1" readonly disabled/>
+          </label>
+          <label>
+            Địa chỉ IP
+            <input name="ipAddress" placeholder="10.0.0.10" required=""/>
+          </label>
+          <label>
+            Vị trí
+            <input name="location" placeholder="Tầng 1 / Phòng kỹ thuật"/>
+          </label>
+          <label>
+            Trạng thái
+            <select name="status">
+              <option value="ONLINE">
+                ONLINE
+              </option>
+              <option value="WARNING">
+                WARNING
+              </option>
+              <option value="OFFLINE">
+                OFFLINE
+              </option>
+            </select>
+          </label>
+          <label id="device-cpu-field">
+            CPU (%)
+            <input max="100" min="0" name="cpuUsage" placeholder="Tự sinh nếu để trống" step="any" type="number"/>
+          </label>
+          <label id="device-ram-field">
+            RAM (%)
+            <input max="100" min="0" name="memoryUsage" placeholder="Tự sinh nếu để trống" step="any" type="number"/>
+          </label>
+        </div>
+        <p class="form-help" id="device-source-help">CPU/RAM mô phỏng được tự động cập nhật theo chu kỳ AWS.</p>
+        <p class="form-error" hidden="" id="form-error" role="alert">
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="cancel-device" type="button">
+            Hủy
+          </button>
+          <button class="btn btn-primary" id="save" type="submit">
+            Lưu thiết bị
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <!-- [HTML-ALERT-POPUP] Popup khi có cảnh báo mới -->
+    <dialog class="modal alert-modal" id="alert-popup">
+      <div class="modal-heading">
+        <div>
+          <span class="eyebrow">
+            CẢNH BÁO HỆ THỐNG
+          </span>
+          <h2>
+            Thiết bị cần được kiểm tra
+          </h2>
+        </div>
+        <button aria-label="Đóng" class="icon-button" id="close-alert-popup" type="button">
+          ×
+        </button>
+      </div>
+      <p class="popup-description">
+        Hệ thống phát hiện cảnh báo chưa xử lý. Hãy kiểm tra và xác nhận trong Trung tâm cảnh báo.
+      </p>
+      <div class="popup-alert-list" id="popup-alert-list">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="dismiss-alert-popup" type="button">
+          Để sau
+        </button>
+        <button class="btn btn-primary" id="open-alerts" type="button">
+          Xem và xử lý cảnh báo
+        </button>
+      </div>
+    </dialog>
+  </body>
+</html>
+

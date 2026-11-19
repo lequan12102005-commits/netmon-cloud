@@ -1,0 +1,35 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadUpdateDevices",
+      "Effect": "Allow",
+      "Action": ["dynamodb:Scan", "dynamodb:UpdateItem"],
+      "Resource": "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/NetworkDevices"
+    },
+    {
+      "Sid": "ReadThresholds",
+      "Effect": "Allow",
+      "Action": ["dynamodb:GetItem"],
+      "Resource": "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/NetworkSettings"
+    },
+    {
+      "Sid": "CreateAlerts",
+      "Effect": "Allow",
+      "Action": ["dynamodb:PutItem"],
+      "Resource": "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/NetworkAlerts"
+    },
+    {
+      "Sid": "PublishAlert",
+      "Effect": "Allow",
+      "Action": ["sns:Publish"],
+      "Resource": "SNS_TOPIC_ARN_HERE"
+    },
+    {
+      "Sid": "ConsumeDeviceStream",
+      "Effect": "Allow",
+      "Action": ["dynamodb:DescribeStream", "dynamodb:GetRecords", "dynamodb:GetShardIterator", "dynamodb:ListStreams"],
+      "Resource": "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/NetworkDevices/stream/*"
+    }
+  ]
+}

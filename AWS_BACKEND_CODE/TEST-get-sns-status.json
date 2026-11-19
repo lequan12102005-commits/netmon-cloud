@@ -1,0 +1,12 @@
+{
+  "version": "2.0",
+  "rawPath": "/sns/status",
+  "requestContext": {
+    "http": {
+      "method": "GET",
+      "path": "/sns/status"
+    }
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
