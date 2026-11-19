@@ -54,7 +54,7 @@ const previousSettings = stored('ha-tang-v1-settings', {});
 const newSettings = stored('netmon-v2-settings', null);
 const settings = Object.assign(
     {
-        url: location.hostname === 'lequan12102005-commits.github.io' ? '' : DEFAULT_URL,
+        url: DEFAULT_URL,
         cpuThreshold: 80,
         ramThreshold: 80,
         interval: 60,
